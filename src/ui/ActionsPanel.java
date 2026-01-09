@@ -32,7 +32,9 @@ public class ActionsPanel extends JPanel {
 		VOTE,
 		DUEL,
 		DEATH_ABILITY,
-		END_PHASE
+		END_PHASE,
+		FORCE_ALIVE,
+		FORCE_DEAD
 	}
 
 	private ActionListenerUI listener;
@@ -98,6 +100,8 @@ public class ActionsPanel extends JPanel {
 			addButton("Game Over", ActionType.END_PHASE);
 		}
 
+		addForceStatusButtons();
+
 		revalidate();
 		repaint();
 	}
@@ -115,6 +119,11 @@ public class ActionsPanel extends JPanel {
 		btn.setFont(new Font("SansSerif", Font.BOLD, 14));
 		btn.addActionListener(new ButtonHandler(type));
 		add(btn);
+	}
+
+	private void addForceStatusButtons() {
+		addButton("Force Alive", ActionType.FORCE_ALIVE);
+		addButton("Force Dead", ActionType.FORCE_DEAD);
 	}
 
 	private final class ButtonHandler implements ActionListener {

@@ -188,6 +188,16 @@ public class GameController implements ActionsPanel.ActionListenerUI, PlayerTabl
 			return;
 		}
 
+		if (action == ActionsPanel.ActionType.FORCE_ALIVE) {
+			forcePlayerAliveStatus(true);
+			return;
+		}
+
+		if (action == ActionsPanel.ActionType.FORCE_DEAD) {
+			forcePlayerAliveStatus(false);
+			return;
+		}
+
 		if (selectedPlayer == null) {
 			window.log("No player selected.");
 			return;
@@ -370,6 +380,55 @@ public class GameController implements ActionsPanel.ActionListenerUI, PlayerTabl
 
 		updatePhase(Phase.DEATH_ABILITY_TRIGGER);
 		window.log(dead.name + " may use their death ability.");
+	}
+
+	private void forcePlayerAliveStatus(boolean alive) {
+		Player target = promptForPlayer(
+			alive ? "Force Alive" : "Force Dead",
+			alive ? "Select a player to revive." : "Select a player to mark dead."
+		);
+
+		if (target == null) {
+			window.log("No player selected.");
+			return;
+		}
+
+		if (alive) {
+			if (target.isAlive()) {
+				window.log(target.name + " is already alive.");
+			} else {
+				state.revivePlayer(target);
+				window.log(target.name + " was forced alive.");
+			}
+		} else {
+			if (!target.isAlive()) {
+				window.log(target.name + " is already dead.");
+			} else {
+				target.death();
+				window.log(target.name + " was forced dead.");
+			}
+		}
+
+		selectedPlayer = null;
+		window.getPlayerTable().clearSelection();
+		window.getPlayerTable().refresh();
+	}
+
+	private Player promptForPlayer(String title, String message) {
+		List<Player> players = state.getPlayers();
+		if (players.isEmpty()) {
+			return null;
+		}
+
+		return (Player) JOptionPane.showInputDialog(
+			window,
+			message,
+			title,
+			JOptionPane.QUESTION_MESSAGE,
+			null,
+			players.toArray(new Player[0]),
+			players.get(0)
+		);
 	}
 
 

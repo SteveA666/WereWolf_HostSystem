@@ -147,6 +147,15 @@ public class GameState {
 		}
 		
 	}
+
+	public void revivePlayer(Player p) {
+		if (p == null) {
+			return;
+		}
+		p.resurrect();
+		deathQueue.remove(p);
+		deathsThisPhase.remove(p);
+	}
 	
 	public boolean hasPendingDeaths() {
         return !deathQueue.isEmpty();
